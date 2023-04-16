@@ -37,7 +37,7 @@ S3_RESOURCE = boto3.resource(
 S3_CLIENT = boto3.client(
     's3', aws_access_key_id=AWS_CONFIG['access_key'], aws_secret_access_key=AWS_CONFIG['secret_key'])
 
-BODY = '{"emailID":"12345", "SentDate":"2023/04/04", "email":"bima.ferdiansyah@sitesjet.com"}'
+# BODY = '{"emailID":"12345", "SentDate":"2023/04/04", "email":"bima.ferdiansyah@sitesjet.com"}'
 
 
 # ========
@@ -46,9 +46,9 @@ BODY = '{"emailID":"12345", "SentDate":"2023/04/04", "email":"bima.ferdiansyah@s
 
 
 def json_manipulation(data, event_type):
-    event_email_id = data["emailID"]
-    sentdate = data["SentDate"]
-    email = data["email"]
+    event_email_id = data["mail"]["tags"]["rbEmailID"][0]
+    sentdate = data["mail"]["tags"]["rbSentDate"][0]
+    email = data["mail"]["commonHeaders"]["to"][0]
 
     if event_email_id != None:
         # mysql_save(event_email_id, email, sentdate, event_type)
@@ -89,9 +89,8 @@ def execute_put_item(input):
 
 def emaillog(event, context):
     
-    event_data = json.loads(event['body'])
-
-    event_type = 'send'
+    event_data = json.loads(event)
+    event_type = event_data['eventType'].lower()
 
 
     json_manipulation(event_data, event_type)
