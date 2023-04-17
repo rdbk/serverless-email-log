@@ -16,6 +16,13 @@ service: email-log-serverless
 app: emaillog-app
 org: bimaferdiansyah
 
+custom:  
+  stage: 'prod' # 'dev' or 'prod'
+  aws:
+    region: 'ap-southeast-1' 
+    key_id: 'AKIAQABZ2UU66TGN2JPR'
+    secret_key: 'KL+G60kh0620ufh0QMLJkDG89iD2JWMR3eRIVAIo' 
+
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
 frameworkVersion: '2'
@@ -23,7 +30,13 @@ frameworkVersion: '2'
 provider:
   name: aws
   runtime: python3.8
-  lambdaHashingVersion: 20201221
+  timeout: 30
+  region: ${self:custom.aws.region}
+  stage: ${self:custom.stage}  
+  environment:
+    CONFIG_AWS_REGION: ${self:custom.aws.region}
+    CONFIG_AWS_KEY_ID: ${self:custom.aws.key_id}
+    CONFIG_AWS_SECRET_KEY: ${self:custom.aws.secret_key}
 
 # you can overwrite defaults here
 #  stage: dev
